@@ -1,5 +1,7 @@
 const express = require('express');
 const mysql = require('mysql');
+const bodyParser = require('body-parser');
+const cors = require('cors')
 const app = express();
 const PORT = 3000;
 
@@ -7,19 +9,26 @@ const db = mysql.createPool({
     connectionLimit : 10,
     host            : 'localhost',
     user            : 'root',
-    password        : '',
+    password        : 'cipher_dev',
     database        : 'mydb'
 })
-app.get("/", (req, res) =>{ //passing 1.route | 2.parameters with function 
-    // req, sending information to the frontend | res, ...
-    res.send("Welcome")
-    // const sqlInsert = "INSERT INTO users(username, password) VALUES('admin', 'admin')"
-    
-    // db.query(sqlInsert, (err, log) => {
-    //     res.send("Successful")
-    // })
+
+app.use(cors)
+app.use(bodyParser.urlencoded({extended: true}));
+
+app.post("/api/insert", (req, res) =>{ 
+
+    const movieName = req.body.movieName
+    const movieReview = req.body.movieReview
+
+    const sqlInsert = "INSERT INTO users(username, password) VALUES(?,?)"
+    db.query(sqlInsert, [movieName, movieReview], (err, result) => {
+        res.send(result)
+    })
     
 }) 
+
+
 
 app.listen(PORT, () => {
     console.log(`It's live at http://localhost:${PORT} .`);
