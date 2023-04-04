@@ -1,32 +1,73 @@
 const express = require('express');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
-const cors = require('cors')
+// const cors = require('cors')
 const app = express();
 const PORT = 3000;
 
 const db = mysql.createPool({
-    connectionLimit : 10,
+    
     host            : 'localhost',
     user            : 'root',
     password        : 'cipher_dev',
-    database        : 'mydb'
+    database        : 'React_Node_CRUD'
 })
 
-app.use(cors)
+// app.use(cors)
+app.use(express.json())
 app.use(bodyParser.urlencoded({extended: true}));
+
+app.get("/api/get", (req,res) =>{
+    const sqlSelect = "SELECT * FROM movie_reviews";
+    db.query(sqlSelect, (err, result) =>{
+        res.send(result);
+        res.send("Hello");
+    })
+})
+
+//testing
+// app.get("/", (req,res) =>{
+//     const sqlInsert = "INSERT INTO movie_reviews(movieName, movieReview) VALUES('inception','great movie')";
+//     db.query(sqlInsert, (err, result) =>{
+//         // res.send("Hello");
+//         res.send(err);
+//         // ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'cipher_dev' 
+//         // Error Fixed
+//     })
+// })
+
 
 app.post("/api/insert", (req, res) =>{ 
 
     const movieName = req.body.movieName
     const movieReview = req.body.movieReview
 
-    const sqlInsert = "INSERT INTO users(username, password) VALUES(?,?)"
+    const sqlInsert = "INSERT INTO movie_reviews(movieName, movieReview) VALUES(?,?)"
     db.query(sqlInsert, [movieName, movieReview], (err, result) => {
-        res.send(result)
+        res.send(result);
+        // console.log(result);
     })
-    
 }) 
+
+api.get("/api/delete", (req, res) =>{
+    const id = req.body.id
+
+    const sqlDelete = `DELETE FROM movie_reviews WHERE id = ${id}`;
+    db.query(sqlDelete, (err, result) =>{
+        res.send("Successfully Deleted")
+    })
+})
+
+api.get("/api/update", (req,res) =>{
+    const id = req.body.id
+    const movieName = req.body.movieName
+    const movieReview = req.body.movieReview
+
+    const sqlUpdate = `UPDATE movie_reviews SET movieName = ${movieName}, movieReview = ${movieReview}' WHERE id=${id}`;
+    db.query(sqlDelete, (err, result) =>{
+        res.send("Successfully Updated")
+    })
+})
 
 
 
