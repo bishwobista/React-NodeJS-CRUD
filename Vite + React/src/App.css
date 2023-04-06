@@ -2,3 +2,7 @@
     margin: 0;
     padding: 0;
 }
+.card{
+    border: 1px solid black;
+    max-width: fit-content;
+}
